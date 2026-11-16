@@ -1,0 +1,1939 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Government Higher Secondary School Marwah | UDISE: 01170201315</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Merriweather:wght@700;900&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Merriweather', 'serif'],
+                    },
+                    colors: {
+                        navy: {
+                            800: '#1e3a8a',
+                            900: '#0f235a',
+                            950: '#091538',
+                        },
+                        emerald: {
+                            600: '#059669',
+                            700: '#047857',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .editable-ring {
+            outline: 2px dashed #f59e0b;
+            outline-offset: 4px;
+            border-radius: 6px;
+            background-color: rgba(254, 243, 199, 0.25);
+            transition: all 0.2s ease;
+        }
+        .editable-ring:focus {
+            outline: 2px solid #d97706;
+            background-color: #ffffff;
+            color: #111827 !important;
+        }
+        @keyframes ticker {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+        .animate-ticker {
+            display: inline-block;
+            white-space: nowrap;
+            animation: ticker 28s linear infinite;
+        }
+        .animate-ticker:hover {
+            animation-play-state: paused;
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #64748b; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased selection:bg-navy-800 selection:text-white">
+
+    <!-- Admin Control Bar (Visible only when Admin Mode is Active) -->
+    <div id="adminBar" class="hidden sticky top-0 z-50 bg-amber-600 text-white shadow-lg border-b border-amber-700">
+        <div class="max-w-7xl mx-auto px-4 py-2.5 flex flex-wrap items-center justify-between gap-3">
+            <div class="flex items-center gap-2.5">
+                <span class="flex h-3 w-3 relative">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-3 w-3 bg-white"></span>
+                </span>
+                <span class="font-bold text-sm tracking-wide uppercase">Admin Edit Mode Active</span>
+                <span class="hidden md:inline text-xs bg-amber-800/60 px-2.5 py-0.5 rounded-full">Click highlighted text to edit directly or use "+ Add" buttons</span>
+            </div>
+            <div class="flex flex-wrap items-center gap-2 text-xs font-semibold">
+                <button onclick="saveAllInlineEdits()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-lg shadow transition flex items-center gap-1.5">
+                    <i class="fas fa-save"></i> Save Changes
+                </button>
+                <button onclick="exportBackup()" class="bg-navy-900 hover:bg-navy-950 text-white px-3 py-1.5 rounded-lg shadow transition flex items-center gap-1.5" title="Download backup JSON file">
+                    <i class="fas fa-download"></i> Export Backup
+                </button>
+                <label class="bg-slate-800 hover:bg-slate-900 text-white px-3 py-1.5 rounded-lg shadow transition flex items-center gap-1.5 cursor-pointer" title="Restore from JSON backup">
+                    <i class="fas fa-upload"></i> Import Backup
+                    <input type="file" accept=".json" onchange="importBackup(event)" class="hidden">
+                </label>
+                <button onclick="resetToDefaultConfirm()" class="bg-red-700 hover:bg-red-800 text-white px-3 py-1.5 rounded-lg shadow transition flex items-center gap-1.5" title="Reset website to original defaults">
+                    <i class="fas fa-rotate-left"></i> Reset
+                </button>
+                <button onclick="toggleAdminMode()" class="bg-white text-amber-800 hover:bg-amber-50 px-3 py-1.5 rounded-lg shadow transition flex items-center gap-1.5">
+                    <i class="fas fa-lock"></i> Exit Admin
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Top Utility Header -->
+    <div class="bg-navy-950 text-slate-200 text-xs border-b border-navy-800">
+        <div class="max-w-7xl mx-auto px-4 py-2 flex flex-wrap items-center justify-between gap-2">
+            <div class="flex flex-wrap items-center gap-4">
+                <span class="flex items-center gap-1.5 font-medium text-amber-400">
+                    <i class="fas fa-id-card"></i> UDISE Code: <strong id="topUdise" data-field="udise" class="editable-text">01170201315</strong>
+                </span>
+                <span class="hidden sm:inline text-slate-500">|</span>
+                <a href="mailto:principal.hssmarwah@jk.gov.in" id="topEmailLink" class="flex items-center gap-1.5 hover:text-white transition">
+                    <i class="fas fa-envelope text-emerald-400"></i> <span id="topEmail" data-field="email" class="editable-text">principal.hssmarwah@jk.gov.in</span>
+                </a>
+                <span class="hidden md:inline text-slate-500">|</span>
+                <a href="tel:9906271593" id="topPhoneLink" class="flex items-center gap-1.5 hover:text-white transition">
+                    <i class="fas fa-phone text-emerald-400"></i> <span id="topPhone" data-field="phone" class="editable-text">9906271593</span>
+                </a>
+            </div>
+            <div class="flex items-center gap-3">
+                <span class="hidden lg:inline text-slate-400">Department of School Education, J&K</span>
+                <button id="adminToggleBtn" onclick="handleAdminButtonClick()" class="bg-amber-500 hover:bg-amber-400 text-navy-950 font-bold px-3 py-1 rounded-md transition flex items-center gap-1.5 shadow-sm">
+                    <i class="fas fa-user-shield"></i> <span id="adminBtnText">Admin / Edit Mode</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main School Header & Navigation -->
+    <header class="bg-white shadow-md sticky top-0 z-40" id="mainHeader">
+        <div class="max-w-7xl mx-auto px-4 py-3.5 flex items-center justify-between gap-4">
+            <!-- School Emblem & Title -->
+            <div class="flex items-center gap-3.5">
+                <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-gradient-to-br from-navy-900 to-navy-800 text-white flex items-center justify-center shadow-md shrink-0 border-2 border-amber-400">
+                    <i class="fas fa-graduation-cap text-2xl sm:text-3xl text-amber-400"></i>
+                </div>
+                <div>
+                    <p class="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-emerald-700">Directorate of School Education Jammu</p>
+                    <h1 id="schoolTitle" data-field="schoolName" class="editable-text font-serif text-lg sm:text-2xl font-black text-navy-950 leading-tight">
+                        Government Higher Secondary School Marwah
+                    </h1>
+                    <p id="schoolLocation" data-field="location" class="editable-text text-xs text-slate-500 font-medium">
+                        Marwah, District Kishtwar, Jammu & Kashmir
+                    </p>
+                </div>
+            </div>
+
+            <!-- Desktop Navigation -->
+            <nav class="hidden xl:flex items-center gap-1 text-sm font-semibold text-slate-700">
+                <a href="#home" class="px-3 py-2 rounded-lg hover:bg-slate-100 hover:text-navy-900 transition">Home</a>
+                <a href="#principal" class="px-3 py-2 rounded-lg hover:bg-slate-100 hover:text-navy-900 transition">Principal's Desk</a>
+                <a href="#notices" class="px-3 py-2 rounded-lg hover:bg-slate-100 hover:text-navy-900 transition">Notices & Downloads</a>
+                <a href="#academics" class="px-3 py-2 rounded-lg hover:bg-slate-100 hover:text-navy-900 transition">Academics</a>
+                <a href="#staff" class="px-3 py-2 rounded-lg hover:bg-slate-100 hover:text-navy-900 transition">Staff Directory</a>
+                <a href="#infrastructure" class="px-3 py-2 rounded-lg hover:bg-slate-100 hover:text-navy-900 transition">Infrastructure</a>
+                <a href="#gallery" class="px-3 py-2 rounded-lg hover:bg-slate-100 hover:text-navy-900 transition">Gallery</a>
+                <a href="#contact" class="ml-2 bg-navy-900 hover:bg-navy-800 text-white px-4 py-2 rounded-lg transition shadow-sm">Contact</a>
+            </nav>
+
+            <!-- Mobile Menu Button -->
+            <button onclick="toggleMobileMenu()" class="xl:hidden p-2.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-navy-900">
+                <i class="fas fa-bars text-xl"></i>
+            </button>
+        </div>
+
+        <!-- Mobile Dropdown Navigation -->
+        <div id="mobileMenu" class="hidden xl:hidden bg-white border-t border-slate-200 px-4 py-3 space-y-1 text-sm font-semibold">
+            <a href="#home" onclick="toggleMobileMenu()" class="block px-3 py-2 rounded-lg hover:bg-slate-100">Home</a>
+            <a href="#principal" onclick="toggleMobileMenu()" class="block px-3 py-2 rounded-lg hover:bg-slate-100">Principal's Desk</a>
+            <a href="#notices" onclick="toggleMobileMenu()" class="block px-3 py-2 rounded-lg hover:bg-slate-100">Notices & Downloads</a>
+            <a href="#academics" onclick="toggleMobileMenu()" class="block px-3 py-2 rounded-lg hover:bg-slate-100">Academics & Streams</a>
+            <a href="#staff" onclick="toggleMobileMenu()" class="block px-3 py-2 rounded-lg hover:bg-slate-100">Staff Directory</a>
+            <a href="#infrastructure" onclick="toggleMobileMenu()" class="block px-3 py-2 rounded-lg hover:bg-slate-100">Infrastructure</a>
+            <a href="#gallery" onclick="toggleMobileMenu()" class="block px-3 py-2 rounded-lg hover:bg-slate-100">Photo Gallery</a>
+            <a href="#contact" onclick="toggleMobileMenu()" class="block px-3 py-2 rounded-lg bg-navy-900 text-white text-center mt-2">Contact Us</a>
+        </div>
+    </header>
+
+    <!-- Live Announcements Ticker -->
+    <div class="bg-emerald-700 text-white text-xs sm:text-sm py-2 overflow-hidden border-b border-emerald-800">
+        <div class="max-w-7xl mx-auto px-4 flex items-center gap-3">
+            <span class="bg-amber-400 text-navy-950 font-extrabold px-2.5 py-0.5 rounded uppercase text-[11px] shrink-0 tracking-wider">
+                Latest Updates
+            </span>
+            <div class="overflow-hidden w-full">
+                <div id="tickerText" class="animate-ticker font-medium">
+                    Welcome to Government Higher Secondary School Marwah (UDISE: 01170201315) • Admissions Open for Class 11th (Science, Arts & Commerce Streams) • Download Latest Date Sheets, Circulars & Forms from the Downloads Section.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section id="home" class="relative bg-gradient-to-br from-navy-950 via-navy-900 to-slate-900 text-white py-14 sm:py-20 overflow-hidden">
+        <!-- Decorative Background Pattern -->
+        <div class="absolute inset-0 opacity-10 pointer-events-none" style="background-image: radial-gradient(#ffffff 1px, transparent 1px); background-size: 24px 24px;"></div>
+        
+        <div class="max-w-7xl mx-auto px-4 relative z-10 grid lg:grid-cols-12 gap-10 items-center">
+            <div class="lg:col-span-7 space-y-6">
+                <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 px-3.5 py-1.5 rounded-full text-xs sm:text-sm font-medium text-amber-300">
+                    <i class="fas fa-award"></i>
+                    <span>UDISE Code: <strong id="heroUdise">01170201315</strong> • Affiliated to JKBOSE</span>
+                </div>
+                <h2 id="heroHeadline" data-field="heroHeadline" class="editable-text font-serif text-3xl sm:text-4xl lg:text-5xl font-black leading-tight">
+                    Nurturing Excellence, Knowledge & Character in Marwah Valley
+                </h2>
+                <p id="heroSubtext" data-field="heroSubtext" class="editable-text text-slate-300 text-base sm:text-lg leading-relaxed max-w-2xl">
+                    Government Higher Secondary School Marwah is committed to delivering accessible, holistic, and quality education to the youth of Marwah, District Kishtwar—empowering students through modern science laboratories, digital learning, and dedicated faculty.
+                </p>
+                <div class="flex flex-wrap gap-3 pt-2">
+                    <a href="#notices" class="bg-amber-500 hover:bg-amber-400 text-navy-950 font-bold px-6 py-3 rounded-xl shadow-lg transition flex items-center gap-2">
+                        <i class="fas fa-file-arrow-down"></i> Notices & Downloads
+                    </a>
+                    <a href="#staff" class="bg-white/10 hover:bg-white/20 border border-white/25 text-white font-semibold px-6 py-3 rounded-xl transition flex items-center gap-2">
+                        <i class="fas fa-chalkboard-user"></i> Meet Our Faculty
+                    </a>
+                    <a href="#infrastructure" class="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold px-6 py-3 rounded-xl transition flex items-center gap-2">
+                        <i class="fas fa-building-columns"></i> Campus Facilities
+                    </a>
+                </div>
+            </div>
+
+            <!-- Quick Key Stats Card -->
+            <div class="lg:col-span-5">
+                <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-6 sm:p-8 shadow-2xl space-y-6">
+                    <div class="flex items-center justify-between border-b border-white/15 pb-4">
+                        <div>
+                            <p class="text-xs uppercase tracking-wider text-amber-300 font-bold">Institution Profile</p>
+                            <h3 class="text-xl font-bold text-white">At a Glance</h3>
+                        </div>
+                        <span class="bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 text-xs font-bold px-3 py-1 rounded-full">
+                            Govt. Institution
+                        </span>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="bg-navy-950/60 p-4 rounded-xl border border-white/10">
+                            <p class="text-xs text-slate-400">UDISE Code</p>
+                            <p class="text-lg font-extrabold text-amber-400 mt-0.5" id="cardUdise">01170201315</p>
+                        </div>
+                        <div class="bg-navy-950/60 p-4 rounded-xl border border-white/10">
+                            <p class="text-xs text-slate-400">Head of Institution</p>
+                            <p class="text-sm font-bold text-white mt-0.5" id="cardPrincipal">Dr. Gopal Krishan</p>
+                        </div>
+                        <div class="bg-navy-950/60 p-4 rounded-xl border border-white/10">
+                            <p class="text-xs text-slate-400">Total Staff Listed</p>
+                            <p class="text-2xl font-extrabold text-emerald-400 mt-0.5" id="statStaffCount">6</p>
+                        </div>
+                        <div class="bg-navy-950/60 p-4 rounded-xl border border-white/10">
+                            <p class="text-xs text-slate-400">Downloadable Files</p>
+                            <p class="text-2xl font-extrabold text-sky-400 mt-0.5" id="statFilesCount">4</p>
+                        </div>
+                    </div>
+                    <div class="text-xs text-slate-300 flex items-center justify-between pt-2 border-t border-white/10">
+                        <span><i class="fas fa-location-dot text-amber-400 mr-1"></i> Marwah, Kishtwar (J&K)</span>
+                        <span><i class="fas fa-phone text-emerald-400 mr-1"></i> <span id="cardPhone">9906271593</span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Principal's Desk Section -->
+    <section id="principal" class="py-16 bg-white border-b border-slate-200">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="bg-slate-50 border border-slate-200 rounded-3xl p-6 sm:p-10 shadow-sm grid lg:grid-cols-12 gap-8 items-center">
+                <!-- Principal Photo -->
+                <div class="lg:col-span-4 flex flex-col items-center text-center">
+                    <div class="relative group w-48 h-48 sm:w-56 sm:h-56 rounded-2xl overflow-hidden shadow-lg border-4 border-white bg-navy-900 flex items-center justify-center">
+                        <img id="principalPhotoImg" src="" alt="Principal Dr. Gopal Krishan" class="w-full h-full object-cover hidden">
+                        <div id="principalPhotoPlaceholder" class="text-white flex flex-col items-center justify-center p-4">
+                            <i class="fas fa-user-tie text-6xl text-amber-400 mb-2"></i>
+                            <span class="text-xs text-slate-300">Principal Portrait</span>
+                        </div>
+                        <!-- Upload overlay in Admin Mode -->
+                        <label id="principalPhotoUploadBtn" class="admin-only hidden absolute inset-0 bg-black/65 text-white flex flex-col items-center justify-center cursor-pointer hover:bg-black/75 transition">
+                            <i class="fas fa-camera text-2xl mb-1 text-amber-400"></i>
+                            <span class="text-xs font-bold">Change Principal Photo</span>
+                            <input type="file" accept="image/*" onchange="uploadPrincipalPhoto(event)" class="hidden">
+                        </label>
+                    </div>
+                    <h3 id="principalNameDisplay" data-field="principalName" class="editable-text font-serif text-xl font-bold text-navy-950 mt-4">
+                        Dr. Gopal Krishan
+                    </h3>
+                    <p id="principalDesignation" data-field="principalDesignation" class="editable-text text-sm font-semibold text-emerald-700">
+                        Principal, Govt. Higher Secondary School Marwah
+                    </p>
+                    <p class="text-xs text-slate-500 mt-1">
+                        <i class="fas fa-phone mr-1"></i> <span id="principalPhone">9906271593</span>
+                    </p>
+                </div>
+
+                <!-- Principal Message -->
+                <div class="lg:col-span-8 space-y-4">
+                    <div class="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-navy-800 bg-navy-800/10 px-3 py-1 rounded-full">
+                        <i class="fas fa-quote-left"></i> From the Principal's Desk
+                    </div>
+                    <h2 id="principalMessageHeading" data-field="principalHeading" class="editable-text font-serif text-2xl sm:text-3xl font-bold text-slate-900">
+                        Message from the Principal
+                    </h2>
+                    <div id="principalMessageBody" data-field="principalMessage" class="editable-text text-slate-600 leading-relaxed space-y-3 text-sm sm:text-base">
+                        <p>
+                            It gives me immense pleasure to welcome students, parents, educators, and visitors to the official digital portal of <strong>Government Higher Secondary School Marwah</strong>. Located in the picturesque and resilient Marwah valley of District Kishtwar, our institution stands as a beacon of higher secondary education and holistic student development.
+                        </p>
+                        <p>
+                            Our mission is to bridge geographical challenges with academic excellence, scientific curiosity, moral integrity, and digital empowerment. Together with our dedicated faculty and supportive community, we strive to ensure every student realizes their highest potential.
+                        </p>
+                    </div>
+                    <div class="pt-3 border-t border-slate-200 flex flex-wrap items-center justify-between gap-4 text-sm">
+                        <div>
+                            <p class="font-bold text-navy-950" id="principalSigName">Dr. Gopal Krishan</p>
+                            <p class="text-xs text-slate-500">Principal, GHSS Marwah (UDISE: 01170201315)</p>
+                        </div>
+                        <a href="#contact" class="text-navy-800 hover:text-navy-950 font-semibold flex items-center gap-1.5">
+                            Contact Principal's Office <i class="fas fa-arrow-right text-xs"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Notices, Circulars & Public Downloads Section -->
+    <section id="notices" class="py-16 bg-slate-50 border-b border-slate-200">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex flex-wrap items-end justify-between gap-4 mb-8">
+                <div>
+                    <span class="text-xs font-bold uppercase tracking-wider text-emerald-700">Public Repository</span>
+                    <h2 class="font-serif text-2xl sm:text-3xl font-bold text-navy-950 mt-1">
+                        Notices, Circulars & Downloads
+                    </h2>
+                    <p class="text-sm text-slate-600 mt-1">
+                        Visitors can view and download official school circulars, exam date sheets, admission forms, and academic calendars.
+                    </p>
+                </div>
+                <div class="flex flex-wrap items-center gap-3">
+                    <!-- Category Filter -->
+                    <select id="noticeFilter" onchange="renderNotices()" class="bg-white border border-slate-300 rounded-xl px-3.5 py-2 text-sm font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-navy-800">
+                        <option value="ALL">All Categories</option>
+                        <option value="Circular">Circulars & Orders</option>
+                        <option value="Exam">Exam & Date Sheets</option>
+                        <option value="Admission">Admissions & Forms</option>
+                        <option value="General">General Notices</option>
+                    </select>
+                    <!-- Admin Add Notice Button -->
+                    <button onclick="openNoticeModal()" class="admin-only hidden bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2 rounded-xl shadow transition flex items-center gap-2 text-sm">
+                        <i class="fas fa-plus-circle"></i> Upload Notice / File
+                    </button>
+                </div>
+            </div>
+
+            <!-- Notices Table / Cards Container -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-navy-950 text-white text-xs uppercase tracking-wider">
+                                <th class="py-3.5 px-5">Date</th>
+                                <th class="py-3.5 px-5">Category</th>
+                                <th class="py-3.5 px-5">Title & Description</th>
+                                <th class="py-3.5 px-5">Attachment</th>
+                                <th class="py-3.5 px-5 text-right">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="noticesTableBody" class="divide-y divide-slate-200 text-sm">
+                            <!-- Populated dynamically via JS -->
+                        </tbody>
+                    </table>
+                </div>
+                <div id="emptyNoticesMsg" class="hidden py-12 text-center text-slate-500">
+                    <i class="fas fa-folder-open text-4xl mb-2 text-slate-300"></i>
+                    <p>No notices or downloadable files found in this category.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Academic Streams & Programs -->
+    <section id="academics" class="py-16 bg-white border-b border-slate-200">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex flex-wrap items-end justify-between gap-4 mb-10">
+                <div>
+                    <span class="text-xs font-bold uppercase tracking-wider text-emerald-700">Academic Structure</span>
+                    <h2 class="font-serif text-2xl sm:text-3xl font-bold text-navy-950 mt-1">
+                        Streams & Academic Programs
+                    </h2>
+                    <p class="text-sm text-slate-600 mt-1">
+                        Structured curriculum following JKBOSE & NEP-2020 guidelines for Secondary and Higher Secondary classes.
+                    </p>
+                </div>
+                <button onclick="openStreamModal()" class="admin-only hidden bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2 rounded-xl shadow transition flex items-center gap-2 text-sm">
+                    <i class="fas fa-plus"></i> Add Stream / Program
+                </button>
+            </div>
+
+            <div id="streamsGrid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Populated dynamically via JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Staff Directory Section -->
+    <section id="staff" class="py-16 bg-slate-50 border-b border-slate-200">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex flex-wrap items-end justify-between gap-4 mb-8">
+                <div>
+                    <span class="text-xs font-bold uppercase tracking-wider text-emerald-700">Our Educators & Administration</span>
+                    <h2 class="font-serif text-2xl sm:text-3xl font-bold text-navy-950 mt-1">
+                        Faculty & Staff Directory
+                    </h2>
+                    <p class="text-sm text-slate-600 mt-1">
+                        Dedicated Lecturers, Masters, Teachers, and Ministerial Staff serving GHSS Marwah.
+                    </p>
+                </div>
+                <div class="flex flex-wrap items-center gap-3">
+                    <input type="text" id="staffSearchInput" oninput="renderStaff()" placeholder="Search staff by name or subject..." class="bg-white border border-slate-300 rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-navy-800">
+                    <button onclick="openStaffModal()" class="admin-only hidden bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2 rounded-xl shadow transition flex items-center gap-2 text-sm">
+                        <i class="fas fa-user-plus"></i> Add Staff Member
+                    </button>
+                </div>
+            </div>
+
+            <div id="staffGrid" class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <!-- Populated dynamically via JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Infrastructure & Facilities Section -->
+    <section id="infrastructure" class="py-16 bg-white border-b border-slate-200">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex flex-wrap items-end justify-between gap-4 mb-10">
+                <div>
+                    <span class="text-xs font-bold uppercase tracking-wider text-emerald-700">Campus & Resources</span>
+                    <h2 class="font-serif text-2xl sm:text-3xl font-bold text-navy-950 mt-1">
+                        School Infrastructure & Facilities
+                    </h2>
+                    <p class="text-sm text-slate-600 mt-1">
+                        Detailed overview of classrooms, laboratories, ICT facilities, library, and student amenities (UDISE: 01170201315).
+                    </p>
+                </div>
+                <button onclick="openInfraModal()" class="admin-only hidden bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2 rounded-xl shadow transition flex items-center gap-2 text-sm">
+                    <i class="fas fa-plus-circle"></i> Add Infrastructure Detail
+                </button>
+            </div>
+
+            <div id="infraGrid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Populated dynamically via JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Campus & Events Photo Gallery -->
+    <section id="gallery" class="py-16 bg-slate-50 border-b border-slate-200">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex flex-wrap items-end justify-between gap-4 mb-10">
+                <div>
+                    <span class="text-xs font-bold uppercase tracking-wider text-emerald-700">Visual Archive</span>
+                    <h2 class="font-serif text-2xl sm:text-3xl font-bold text-navy-950 mt-1">
+                        Campus & Activities Gallery
+                    </h2>
+                    <p class="text-sm text-slate-600 mt-1">
+                        Glimpses of academic events, cultural programs, sports, and campus life at GHSS Marwah. Visitors can click to enlarge or download photos.
+                    </p>
+                </div>
+                <button onclick="openGalleryModal()" class="admin-only hidden bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2 rounded-xl shadow transition flex items-center gap-2 text-sm">
+                    <i class="fas fa-image"></i> Upload Photo
+                </button>
+            </div>
+
+            <div id="galleryGrid" class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                <!-- Populated dynamically via JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact & Location Section -->
+    <section id="contact" class="py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="grid lg:grid-cols-12 gap-10">
+                <!-- Contact Details -->
+                <div class="lg:col-span-5 space-y-6">
+                    <div>
+                        <span class="text-xs font-bold uppercase tracking-wider text-emerald-700">Get In Touch</span>
+                        <h2 class="font-serif text-2xl sm:text-3xl font-bold text-navy-950 mt-1">
+                            Contact Administration
+                        </h2>
+                        <p class="text-sm text-slate-600 mt-2">
+                            For admissions, academic inquiries, transfer certificates, or administrative assistance, reach out to our office during working hours.
+                        </p>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div class="flex items-start gap-4 p-4 rounded-2xl bg-slate-50 border border-slate-200">
+                            <div class="w-10 h-10 rounded-xl bg-navy-900 text-amber-400 flex items-center justify-center shrink-0">
+                                <i class="fas fa-school"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs font-bold text-slate-400 uppercase">School & UDISE Code</p>
+                                <p class="font-bold text-slate-900">Government Higher Secondary School Marwah</p>
+                                <p class="text-sm text-emerald-700 font-semibold">UDISE Code: <span id="contactUdise">01170201315</span></p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-4 p-4 rounded-2xl bg-slate-50 border border-slate-200">
+                            <div class="w-10 h-10 rounded-xl bg-navy-900 text-amber-400 flex items-center justify-center shrink-0">
+                                <i class="fas fa-user-tie"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs font-bold text-slate-400 uppercase">Principal</p>
+                                <p class="font-bold text-slate-900" id="contactPrincipal">Dr. Gopal Krishan</p>
+                                <p class="text-sm text-slate-600">Head of Institution</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-4 p-4 rounded-2xl bg-slate-50 border border-slate-200">
+                            <div class="w-10 h-10 rounded-xl bg-navy-900 text-amber-400 flex items-center justify-center shrink-0">
+                                <i class="fas fa-phone"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs font-bold text-slate-400 uppercase">Contact Number</p>
+                                <a href="tel:9906271593" id="contactPhoneLink" class="font-bold text-slate-900 hover:text-navy-800 text-lg">
+                                    <span id="contactPhone">9906271593</span>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-4 p-4 rounded-2xl bg-slate-50 border border-slate-200">
+                            <div class="w-10 h-10 rounded-xl bg-navy-900 text-amber-400 flex items-center justify-center shrink-0">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs font-bold text-slate-400 uppercase">Official Email</p>
+                                <a href="mailto:principal.hssmarwah@jk.gov.in" id="contactEmailLink" class="font-bold text-navy-800 hover:underline break-all">
+                                    <span id="contactEmail">principal.hssmarwah@jk.gov.in</span>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-4 p-4 rounded-2xl bg-slate-50 border border-slate-200">
+                            <div class="w-10 h-10 rounded-xl bg-navy-900 text-amber-400 flex items-center justify-center shrink-0">
+                                <i class="fas fa-location-dot"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs font-bold text-slate-400 uppercase">Campus Address</p>
+                                <p id="contactAddress" data-field="address" class="editable-text font-semibold text-slate-800 text-sm">
+                                    Marwah, Tehsil Marwah, District Kishtwar, Union Territory of Jammu & Kashmir - 182205
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Visitor Feedback / Inquiry Box -->
+                <div class="lg:col-span-7">
+                    <div class="bg-slate-50 border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm">
+                        <h3 class="font-serif text-xl font-bold text-navy-950 mb-2">Send an Inquiry to School Office</h3>
+                        <p class="text-sm text-slate-600 mb-6">
+                            Students, parents, and visitors can submit messages or queries directly.
+                        </p>
+                        <form onsubmit="submitVisitorInquiry(event)" class="space-y-4">
+                            <div class="grid sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Full Name *</label>
+                                    <input type="text" id="inqName" required placeholder="Enter your name" class="w-full bg-white border border-slate-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-navy-800">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Phone / Email *</label>
+                                    <input type="text" id="inqContact" required placeholder="Mobile number or email" class="w-full bg-white border border-slate-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-navy-800">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Subject *</label>
+                                <input type="text" id="inqSubject" required placeholder="e.g., Class 11 Admission / Certificate Query" class="w-full bg-white border border-slate-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-navy-800">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Message *</label>
+                                <textarea id="inqMessage" rows="4" required placeholder="Write your message here..." class="w-full bg-white border border-slate-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-navy-800"></textarea>
+                            </div>
+                            <div class="flex flex-wrap items-center justify-between gap-3 pt-2">
+                                <button type="submit" class="bg-navy-900 hover:bg-navy-800 text-white font-bold px-6 py-3 rounded-xl shadow transition flex items-center gap-2 text-sm">
+                                    <i class="fas fa-paper-plane"></i> Submit Message
+                                </button>
+                                <button type="button" onclick="openInquiriesDrawer()" class="admin-only hidden text-xs font-bold text-amber-700 bg-amber-100 px-3 py-2 rounded-lg hover:bg-amber-200">
+                                    <i class="fas fa-inbox mr-1"></i> View Received Inquiries (<span id="inquiryCountBadge">0</span>)
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-navy-950 text-slate-300 border-t border-navy-800">
+        <div class="max-w-7xl mx-auto px-4 py-12 grid md:grid-cols-3 gap-8">
+            <div class="space-y-3">
+                <div class="flex items-center gap-2.5">
+                    <i class="fas fa-graduation-cap text-2xl text-amber-400"></i>
+                    <span class="font-serif font-bold text-white text-lg">GHSS Marwah</span>
+                </div>
+                <p class="text-xs text-slate-400 leading-relaxed">
+                    Government Higher Secondary School Marwah, District Kishtwar, Jammu & Kashmir. Committed to quality public education under the Department of School Education, Govt. of J&K.
+                </p>
+                <p class="text-xs font-semibold text-amber-400">UDISE Code: 01170201315</p>
+            </div>
+
+            <div class="space-y-2 text-sm">
+                <h4 class="font-bold text-white uppercase text-xs tracking-wider mb-3">Quick Links</h4>
+                <ul class="space-y-1.5 text-xs">
+                    <li><a href="#principal" class="hover:text-amber-400 transition">Principal's Message (Dr. Gopal Krishan)</a></li>
+                    <li><a href="#notices" class="hover:text-amber-400 transition">Notices, Circulars & Downloads</a></li>
+                    <li><a href="#staff" class="hover:text-amber-400 transition">Faculty & Staff Directory</a></li>
+                    <li><a href="#infrastructure" class="hover:text-amber-400 transition">School Infrastructure Details</a></li>
+                    <li><a href="#gallery" class="hover:text-amber-400 transition">Photo Gallery</a></li>
+                </ul>
+            </div>
+
+            <div class="space-y-2 text-xs">
+                <h4 class="font-bold text-white uppercase tracking-wider mb-3">Official Contact</h4>
+                <p><i class="fas fa-user-tie text-emerald-400 mr-2"></i> Principal: <strong class="text-white">Dr. Gopal Krishan</strong></p>
+                <p><i class="fas fa-phone text-emerald-400 mr-2"></i> Phone: <strong class="text-white">9906271593</strong></p>
+                <p><i class="fas fa-envelope text-emerald-400 mr-2"></i> Email: <strong class="text-white">principal.hssmarwah@jk.gov.in</strong></p>
+                <p><i class="fas fa-location-dot text-emerald-400 mr-2"></i> Marwah, District Kishtwar, J&K</p>
+            </div>
+        </div>
+
+        <div class="bg-black/40 border-t border-white/10 py-4 px-4">
+            <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-400">
+                <p>© <span id="currentYear"></span> Government Higher Secondary School Marwah. All Rights Reserved.</p>
+                <p class="font-semibold text-slate-200 bg-white/5 px-3 py-1 rounded-full border border-white/10">
+                    <i class="fas fa-code text-amber-400 mr-1.5"></i> Web Designer: <span id="webDesignerName" data-field="webDesigner" class="editable-text text-amber-400 font-bold">Malik G R Mohsin</span>
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ==================== MODALS & DRAWERS ==================== -->
+
+    <!-- Admin PIN Modal -->
+    <div id="pinModal" class="hidden fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
+            <div class="flex items-center justify-between">
+                <h3 class="font-serif text-xl font-bold text-navy-950 flex items-center gap-2">
+                    <i class="fas fa-shield-halved text-amber-500"></i> Admin Authentication
+                </h3>
+                <button onclick="closeModal('pinModal')" class="text-slate-400 hover:text-slate-700"><i class="fas fa-times text-lg"></i></button>
+            </div>
+            <p class="text-sm text-slate-600">
+                Enter the Admin PIN to unlock full website editing, file uploads, staff management, and infrastructure updates.
+            </p>
+            <div class="bg-amber-50 border border-amber-200 rounded-xl p-3 text-xs text-amber-900 flex items-center justify-between">
+                <span>Default Admin PIN: <strong class="font-mono text-sm">1234</strong></span>
+                <button type="button" onclick="document.getElementById('adminPinInput').value='1234'" class="underline font-bold">Auto-fill</button>
+            </div>
+            <form onsubmit="verifyAdminPin(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold uppercase text-slate-700 mb-1">Admin PIN</label>
+                    <input type="password" id="adminPinInput" required placeholder="Enter PIN (1234)" class="w-full border border-slate-300 rounded-xl px-4 py-2.5 text-center text-lg font-mono tracking-widest focus:outline-none focus:ring-2 focus:ring-navy-800">
+                </div>
+                <p id="pinErrorMsg" class="hidden text-xs text-red-600 font-semibold">Incorrect PIN. Please try 1234.</p>
+                <div class="flex justify-end gap-2">
+                    <button type="button" onclick="closeModal('pinModal')" class="px-4 py-2 rounded-xl border border-slate-300 text-sm font-semibold hover:bg-slate-100">Cancel</button>
+                    <button type="submit" class="px-5 py-2 rounded-xl bg-navy-900 hover:bg-navy-800 text-white text-sm font-bold">Unlock Edit Mode</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add/Edit Notice & File Upload Modal -->
+    <div id="noticeModal" class="hidden fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between border-b pb-3">
+                <h3 id="noticeModalTitle" class="font-serif text-lg font-bold text-navy-950">Upload Notice / Downloadable File</h3>
+                <button onclick="closeModal('noticeModal')" class="text-slate-400 hover:text-slate-700"><i class="fas fa-times"></i></button>
+            </div>
+            <form onsubmit="saveNotice(event)" class="space-y-4">
+                <input type="hidden" id="editNoticeId">
+                <div>
+                    <label class="block text-xs font-bold uppercase text-slate-700 mb-1">Notice / Document Title *</label>
+                    <input type="text" id="noticeTitleInput" required placeholder="e.g., Class 11th Annual Date Sheet 2026" class="w-full border border-slate-300 rounded-xl px-3.5 py-2 text-sm">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-700 mb-1">Category *</label>
+                        <select id="noticeCategoryInput" class="w-full border border-slate-300 rounded-xl px-3.5 py-2 text-sm">
+                            <option value="Circular">Circular</option>
+                            <option value="Exam">Exam</option>
+                            <option value="Admission">Admission</option>
+                            <option value="General">General</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-700 mb-1">Date *</label>
+                        <input type="date" id="noticeDateInput" required class="w-full border border-slate-300 rounded-xl px-3.5 py-2 text-sm">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase text-slate-700 mb-1">Brief Description</label>
+                    <textarea id="noticeDescInput" rows="2" placeholder="Optional details about this circular or file..." class="w-full border border-slate-300 rounded-xl px-3.5 py-2 text-sm"></textarea>
+                </div>
+                <div class="bg-slate-50 border border-dashed border-slate-300 rounded-xl p-4">
+                    <label class="block text-xs font-bold uppercase text-slate-700 mb-1">
+                        <i class="fas fa-paperclip text-emerald-600 mr-1"></i> Upload File (PDF, DOC, Image, TXT, etc.)
+                    </label>
+                    <input type="file" id="noticeFileInput" onchange="handleNoticeFileSelect(event)" class="w-full text-xs text-slate-600 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-navy-900 file:text-white hover:file:bg-navy-800 cursor-pointer">
+                    <p id="selectedFileNameDisplay" class="text-xs text-emerald-700 font-semibold mt-2"></p>
+                    <p class="text-[11px] text-slate-400 mt-1">Visitors will be able to download this exact file with one click.</p>
+                </div>
+                <div class="flex justify-end gap-2 pt-2">
+                    <button type="button" onclick="closeModal('noticeModal')" class="px-4 py-2 rounded-xl border border-slate-300 text-sm font-semibold">Cancel</button>
+                    <button type="submit" class="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold">Save & Publish</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add/Edit Staff Modal -->
+    <div id="staffModal" class="hidden fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between border-b pb-3">
+                <h3 id="staffModalTitle" class="font-serif text-lg font-bold text-navy-950">Add Staff Member</h3>
+                <button onclick="closeModal('staffModal')" class="text-slate-400 hover:text-slate-700"><i class="fas fa-times"></i></button>
+            </div>
+            <form onsubmit="saveStaffMember(event)" class="space-y-4">
+                <input type="hidden" id="editStaffId">
+                <div class="grid sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-700 mb-1">Full Name *</label>
+                        <input type="text" id="staffNameInput" required placeholder="e.g., Mr. Tariq Ahmad" class="w-full border border-slate-300 rounded-xl px-3.5 py-2 text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-700 mb-1">Designation *</label>
+                        <input type="text" id="staffDesignationInput" required placeholder="e.g., Senior Lecturer / Master" class="w-full border border-slate-300 rounded-xl px-3.5 py-2 text-sm">
+                    </div>
+                </div>
+                <div class="grid sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-700 mb-1">Subject / Department *</label>
+                        <input type="text" id="staffSubjectInput" required placeholder="e.g., Physics / Administration" class="w-full border border-slate-300 rounded-xl px-3.5 py-2 text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-700 mb-1">Qualification *</label>
+                        <input type="text" id="staffQualInput" required placeholder="e.g., M.Sc., B.Ed." class="w-full border border-slate-300 rounded-xl px-3.5 py-2 text-sm">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase text-slate-700 mb-1">Contact / Email (Optional)</label>
+                    <input type="text" id="staffContactInput" placeholder="Phone or email" class="w-full border border-slate-300 rounded-xl px-3.5 py-2 text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase text-slate-700 mb-1">Staff Photo (Optional)</label>
+                    <input type="file" accept="image/*" id="staffPhotoInput" onchange="handleStaffPhotoSelect(event)" class="w-full text-xs text-slate-600 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-navy-900 file:text-white">
+                </div>
+                <div class="flex justify-end gap-2 pt-2">
+                    <button type="button" onclick="closeModal('staffModal')" class="px-4 py-2 rounded-xl border border-slate-300 text-sm font-semibold">Cancel</button>
+                    <button type="submit" class="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold">Save Staff</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add/Edit Infrastructure Modal -->
+    <div id="infraModal" class="hidden fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between border-b pb-3">
+                <h3 id="infraModalTitle" class="font-serif text-lg font-bold text-navy-950">Add Infrastructure Facility</h3>
+                <button onclick="closeModal('infraModal')" class="text-slate-400 hover:text-slate-700"><i class="fas fa-times"></i></button>
+            </div>
+            <form onsubmit="saveInfraItem(event)" class="space-y-4">
+                <input type="hidden" id="editInfraId">
+                <div>
+                    <label class="block text-xs font-bold uppercase text-slate-700 mb-1">Facility Name *</label>
+                    <input type="text" id="infraTitleInput" required placeholder="e.g., Smart Classrooms / Chemistry Lab" class="w-full border border-slate-300 rounded-xl px-3.5 py-2 text-sm">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-700 mb-1">Count / Capacity *</label>
+                        <input type="text" id="infraCountInput" required placeholder="e.g., 14 Rooms / 40 Systems" class="w-full border border-slate-300 rounded-xl px-3.5 py-2 text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-700 mb-1">Status *</label>
+                        <select id="infraStatusInput" class="w-full border border-slate-300 rounded-xl px-3.5 py-2 text-sm">
+                            <option value="Fully Functional">Fully Functional</option>
+                            <option value="Available">Available</option>
+                            <option value="Under Expansion">Under Expansion</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase text-slate-700 mb-1">Facility Details *</label>
+                    <textarea id="infraDescInput" rows="3" required placeholder="Describe equipment, seating, or features..." class="w-full border border-slate-300 rounded-xl px-3.5 py-2 text-sm"></textarea>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase text-slate-700 mb-1">Upload Facility Photo (Optional)</label>
+                    <input type="file" accept="image/*" id="infraPhotoInput" onchange="handleInfraPhotoSelect(event)" class="w-full text-xs text-slate-600 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-navy-900 file:text-white">
+                </div>
+                <div class="flex justify-end gap-2 pt-2">
+                    <button type="button" onclick="closeModal('infraModal')" class="px-4 py-2 rounded-xl border border-slate-300 text-sm font-semibold">Cancel</button>
+                    <button type="submit" class="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold">Save Infrastructure</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Academic Stream Modal -->
+    <div id="streamModal" class="hidden fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-4">
+            <div class="flex items-center justify-between border-b pb-3">
+                <h3 class="font-serif text-lg font-bold text-navy-950">Add / Edit Academic Stream</h3>
+                <button onclick="closeModal('streamModal')" class="text-slate-400 hover:text-slate-700"><i class="fas fa-times"></i></button>
+            </div>
+            <form onsubmit="saveStreamItem(event)" class="space-y-4">
+                <input type="hidden" id="editStreamId">
+                <div>
+                    <label class="block text-xs font-bold uppercase text-slate-700 mb-1">Stream / Wing Title *</label>
+                    <input type="text" id="streamTitleInput" required placeholder="e.g., Higher Secondary - Science Stream" class="w-full border border-slate-300 rounded-xl px-3.5 py-2 text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase text-slate-700 mb-1">Classes Covered *</label>
+                    <input type="text" id="streamClassesInput" required placeholder="e.g., Class 11th & 12th" class="w-full border border-slate-300 rounded-xl px-3.5 py-2 text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase text-slate-700 mb-1">Subjects Offered (Comma separated) *</label>
+                    <input type="text" id="streamSubjectsInput" required placeholder="e.g., Physics, Chemistry, Biology, Mathematics, English" class="w-full border border-slate-300 rounded-xl px-3.5 py-2 text-sm">
+                </div>
+                <div class="flex justify-end gap-2 pt-2">
+                    <button type="button" onclick="closeModal('streamModal')" class="px-4 py-2 rounded-xl border border-slate-300 text-sm font-semibold">Cancel</button>
+                    <button type="submit" class="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold">Save Stream</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Upload Gallery Photo Modal -->
+    <div id="galleryModal" class="hidden fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
+            <div class="flex items-center justify-between border-b pb-3">
+                <h3 class="font-serif text-lg font-bold text-navy-950">Upload Photo to Gallery</h3>
+                <button onclick="closeModal('galleryModal')" class="text-slate-400 hover:text-slate-700"><i class="fas fa-times"></i></button>
+            </div>
+            <form onsubmit="saveGalleryPhoto(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold uppercase text-slate-700 mb-1">Photo Caption / Event Title *</label>
+                    <input type="text" id="galleryCaptionInput" required placeholder="e.g., Annual Sports Day 2026" class="w-full border border-slate-300 rounded-xl px-3.5 py-2 text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase text-slate-700 mb-1">Select Image *</label>
+                    <input type="file" accept="image/*" required id="galleryFileInput" onchange="handleGalleryFileSelect(event)" class="w-full text-xs text-slate-600 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-navy-900 file:text-white">
+                </div>
+                <div class="flex justify-end gap-2 pt-2">
+                    <button type="button" onclick="closeModal('galleryModal')" class="px-4 py-2 rounded-xl border border-slate-300 text-sm font-semibold">Cancel</button>
+                    <button type="submit" class="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold">Add to Gallery</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Lightbox Modal for Gallery -->
+    <div id="lightboxModal" class="hidden fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4" onclick="closeModal('lightboxModal')">
+        <div class="max-w-4xl w-full bg-slate-900 rounded-2xl overflow-hidden shadow-2xl border border-white/15" onclick="event.stopPropagation()">
+            <div class="flex items-center justify-between px-5 py-3 bg-black/50 text-white">
+                <p id="lightboxCaption" class="font-semibold text-sm"></p>
+                <div class="flex items-center gap-3">
+                    <a id="lightboxDownloadBtn" href="#" download="GHSS_Marwah_Photo.png" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-3 py-1.5 rounded-lg flex items-center gap-1.5">
+                        <i class="fas fa-download"></i> Download Image
+                    </a>
+                    <button onclick="closeModal('lightboxModal')" class="text-slate-400 hover:text-white"><i class="fas fa-times text-lg"></i></button>
+                </div>
+            </div>
+            <div class="bg-black flex items-center justify-center max-h-[75vh]">
+                <img id="lightboxImg" src="" alt="Gallery preview" class="max-h-[75vh] w-auto object-contain">
+            </div>
+        </div>
+    </div>
+
+    <!-- Received Inquiries Modal (Admin) -->
+    <div id="inquiriesModal" class="hidden fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-2xl w-full p-6 shadow-2xl space-y-4 max-h-[85vh] overflow-y-auto">
+            <div class="flex items-center justify-between border-b pb-3">
+                <h3 class="font-serif text-lg font-bold text-navy-950">Visitor Inquiries & Messages</h3>
+                <button onclick="closeModal('inquiriesModal')" class="text-slate-400 hover:text-slate-700"><i class="fas fa-times"></i></button>
+            </div>
+            <div id="inquiriesList" class="space-y-3 text-sm"></div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 bg-navy-950 text-white px-5 py-3 rounded-xl shadow-2xl border border-white/15 flex items-center gap-3 text-sm font-medium">
+        <i id="toastIcon" class="fas fa-check-circle text-emerald-400"></i>
+        <span id="toastMessage">Saved successfully!</span>
+    </div>
+
+    <script>
+        // ==================== DEFAULT DATA & STATE ====================
+        const STORAGE_KEY = 'ghss_marwah_cms_v1';
+        let isAdminMode = false;
+
+        // Helper to generate clean SVG data URIs for default gallery photos
+        function createCampusSvg(title, subtitle, color1, color2) {
+            const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="800" height="520" viewBox="0 0 800 520">
+                <defs>
+                    <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="${color1}"/>
+                        <stop offset="100%" stop-color="${color2}"/>
+                    </linearGradient>
+                </defs>
+                <rect width="800" height="520" fill="url(#g)"/>
+                <polygon points="0,420 180,240 360,420" fill="rgba(255,255,255,0.08)"/>
+                <polygon points="240,420 480,190 740,420" fill="rgba(255,255,255,0.12)"/>
+                <rect x="0" y="420" width="800" height="100" fill="rgba(0,0,0,0.28)"/>
+                <circle cx="670" cy="110" r="42" fill="#fbbf24" opacity="0.85"/>
+                <text x="50" y="340" fill="#ffffff" font-family="sans-serif" font-size="34" font-weight="bold">${title}</text>
+                <text x="50" y="380" fill="#e2e8f0" font-family="sans-serif" font-size="20">${subtitle}</text>
+                <text x="50" y="472" fill="#fbbf24" font-family="sans-serif" font-size="16" font-weight="bold">GOVT. HIGHER SECONDARY SCHOOL MARWAH • UDISE: 01170201315</text>
+            </svg>`;
+            return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+        }
+
+        // Helper to create downloadable sample document data URL
+        function createSampleDocUrl(title, bodyText) {
+            const content = `GOVERNMENT HIGHER SECONDARY SCHOOL MARWAH\nUDISE Code: 01170201315 | District Kishtwar, J&K\nEmail: principal.hssmarwah@jk.gov.in | Phone: 9906271593\nPrincipal: Dr. Gopal Krishan\n============================================================\n\nDOCUMENT: ${title}\n\n${bodyText}\n\nSd/-\nPrincipal\nGovt. Higher Secondary School Marwah`;
+            return 'data:text/plain;charset=utf-8,' + encodeURIComponent(content);
+        }
+
+        const defaultState = {
+            info: {
+                schoolName: "Government Higher Secondary School Marwah",
+                udise: "01170201315",
+                email: "principal.hssmarwah@jk.gov.in",
+                phone: "9906271593",
+                location: "Marwah, District Kishtwar, Jammu & Kashmir",
+                address: "Marwah, Tehsil Marwah, District Kishtwar, Union Territory of Jammu & Kashmir - 182205",
+                principalName: "Dr. Gopal Krishan",
+                principalDesignation: "Principal, Govt. Higher Secondary School Marwah",
+                principalHeading: "Message from the Principal",
+                principalMessage: "<p>It gives me immense pleasure to welcome students, parents, educators, and visitors to the official digital portal of <strong>Government Higher Secondary School Marwah</strong>. Located in the picturesque and resilient Marwah valley of District Kishtwar, our institution stands as a beacon of higher secondary education and holistic student development.</p><p>Our mission is to bridge geographical challenges with academic excellence, scientific curiosity, moral integrity, and digital empowerment. Together with our dedicated faculty and supportive community, we strive to ensure every student realizes their highest potential.</p>",
+                principalPhoto: "",
+                heroHeadline: "Nurturing Excellence, Knowledge & Character in Marwah Valley",
+                heroSubtext: "Government Higher Secondary School Marwah is committed to delivering accessible, holistic, and quality education to the youth of Marwah, District Kishtwar—empowering students through modern science laboratories, digital learning, and dedicated faculty.",
+                webDesigner: "Malik G R Mohsin"
+            },
+            notices: [
+                {
+                    id: "n1",
+                    date: "2026-11-10",
+                    category: "Admission",
+                    title: "Admission Notification & Form for Class 11th (Session 2026-27)",
+                    description: "Applications are invited from eligible Class 10th passed students for Science, Arts, and Commerce streams.",
+                    fileName: "GHSS_Marwah_Class11_Admission_Notice.txt",
+                    fileData: createSampleDocUrl("Class 11th Admission Notification", "Admissions are open for Class 11th in Medical, Non-Medical, Humanities/Arts, and Commerce streams. Students must submit their Marks Card, DOB Certificate, and Transfer Certificate at the school office.")
+                },
+                {
+                    id: "n2",
+                    date: "2026-11-04",
+                    category: "Exam",
+                    title: "Internal Assessment & Pre-Board Examination Date Sheet",
+                    description: "Schedule for Class 10th, 11th, and 12th internal assessment examinations.",
+                    fileName: "GHSS_Marwah_Exam_Datesheet.txt",
+                    fileData: createSampleDocUrl("Examination Date Sheet", "All students of Classes 10th, 11th, and 12th are informed that internal examinations will commence from 10:30 AM sharp in the Main Examination Hall.")
+                },
+                {
+                    id: "n3",
+                    date: "2026-10-25",
+                    category: "Circular",
+                    title: "School Prospectus & UDISE Infrastructure Profile (01170201315)",
+                    description: "Official academic profile, faculty list, and facility details of GHSS Marwah.",
+                    fileName: "GHSS_Marwah_School_Profile.txt",
+                    fileData: createSampleDocUrl("School Profile & Prospectus", "Institution: Government Higher Secondary School Marwah\nUDISE Code: 01170201315\nPrincipal: Dr. Gopal Krishan\nContact: 9906271593\nEmail: principal.hssmarwah@jk.gov.in")
+                }
+            ],
+            streams: [
+                {
+                    id: "st1",
+                    title: "Higher Secondary — Science Stream",
+                    classes: "Class 11th & 12th (Medical & Non-Medical)",
+                    subjects: "General English, Physics, Chemistry, Biology, Mathematics, Environmental Science"
+                },
+                {
+                    id: "st2",
+                    title: "Higher Secondary — Humanities / Arts",
+                    classes: "Class 11th & 12th",
+                    subjects: "General English, Political Science, History, Economics, Education, Sociology, Urdu / Hindi"
+                },
+                {
+                    id: "st3",
+                    title: "Higher Secondary — Commerce & Secondary Wing",
+                    classes: "Class 9th, 10th, 11th & 12th",
+                    subjects: "Accountancy, Business Studies, Economics, Mathematics, Social Science, Science, IT/Vocational"
+                }
+            ],
+            staff: [
+                {
+                    id: "s1",
+                    name: "Dr. Gopal Krishan",
+                    designation: "Principal",
+                    subject: "Administration & Academic Head",
+                    qualification: "Ph.D., M.Sc., B.Ed.",
+                    contact: "9906271593",
+                    photo: ""
+                },
+                {
+                    id: "s2",
+                    name: "Senior Lecturer (Physics)",
+                    designation: "Senior Lecturer",
+                    subject: "Department of Physics",
+                    qualification: "M.Sc. Physics, B.Ed.",
+                    contact: "principal.hssmarwah@jk.gov.in",
+                    photo: ""
+                },
+                {
+                    id: "s3",
+                    name: "Lecturer (Chemistry)",
+                    designation: "Lecturer",
+                    subject: "Department of Chemistry",
+                    qualification: "M.Sc. Chemistry, B.Ed.",
+                    contact: "principal.hssmarwah@jk.gov.in",
+                    photo: ""
+                },
+                {
+                    id: "s4",
+                    name: "Lecturer (Botany & Zoology)",
+                    designation: "Lecturer",
+                    subject: "Department of Biological Sciences",
+                    qualification: "M.Sc. Botany, B.Ed.",
+                    contact: "principal.hssmarwah@jk.gov.in",
+                    photo: ""
+                },
+                {
+                    id: "s5",
+                    name: "Lecturer (Political Science)",
+                    designation: "Lecturer",
+                    subject: "Department of Humanities",
+                    qualification: "M.A. Political Science, B.Ed.",
+                    contact: "principal.hssmarwah@jk.gov.in",
+                    photo: ""
+                },
+                {
+                    id: "s6",
+                    name: "Head Assistant / Clerical Staff",
+                    designation: "Ministerial & Office Staff",
+                    subject: "Office Records, UDISE & Accounts",
+                    qualification: "Graduate",
+                    contact: "9906271593",
+                    photo: ""
+                }
+            ],
+            infrastructure: [
+                {
+                    id: "inf1",
+                    title: "Spacious Classrooms",
+                    count: "14 Well-Ventilated Rooms",
+                    status: "Fully Functional",
+                    description: "Well-lit classrooms equipped with ergonomic student desks, green/white boards, and proper heating/insulation suited for Marwah's climate.",
+                    photo: ""
+                },
+                {
+                    id: "inf2",
+                    title: "Science Laboratories",
+                    count: "3 Dedicated Labs",
+                    status: "Fully Functional",
+                    description: "Separate Physics, Chemistry, and Biology laboratories stocked with modern apparatus, microscopes, specimens, and safety gear for practicals.",
+                    photo: ""
+                },
+                {
+                    id: "inf3",
+                    title: "ICT & Smart Computer Lab",
+                    count: "20+ Desktops & Smart Board",
+                    status: "Fully Functional",
+                    description: "Digital learning lab enabling computer literacy, CAL (Computer Aided Learning), e-content access, and digital skill development.",
+                    photo: ""
+                },
+                {
+                    id: "inf4",
+                    title: "School Library & Reading Room",
+                    count: "2,500+ Books & Journals",
+                    status: "Available",
+                    description: "Rich collection of JKBOSE reference books, competitive exam guides, encyclopedias, literature, and daily newspapers.",
+                    photo: ""
+                },
+                {
+                    id: "inf5",
+                    title: "Playground & Sports Facilities",
+                    count: "Outdoor Sports Ground",
+                    status: "Available",
+                    description: "Dedicated playground supporting cricket, volleyball, football, athletics, and annual inter-house sports tournaments.",
+                    photo: ""
+                },
+                {
+                    id: "inf6",
+                    title: "Clean Drinking Water & Sanitation",
+                    count: "Separate Boys & Girls Blocks",
+                    status: "Fully Functional",
+                    description: "Hygienic washroom facilities for boys, girls, and staff along with filtered safe drinking water stations on campus.",
+                    photo: ""
+                }
+            ],
+            gallery: [
+                {
+                    id: "g1",
+                    caption: "GHSS Marwah Main Academic Campus — Scenic Valley View",
+                    image: createCampusSvg("GHSS Marwah Campus", "Academic Block & Administrative Wing", "#0f235a", "#047857")
+                },
+                {
+                    id: "g2",
+                    caption: "Science & ICT Digital Learning Laboratories",
+                    image: createCampusSvg("Science & ICT Labs", "Hands-on Practical & Digital Education", "#1e3a8a", "#0f766e")
+                },
+                {
+                    id: "g3",
+                    caption: "Annual Sports & Co-Curricular Celebration",
+                    image: createCampusSvg("Sports & Cultural Day", "Holistic Student Development at Marwah", "#091538", "#b45309")
+                },
+                {
+                    id: "g4",
+                    caption: "Morning Assembly & Academic Excellence Awards",
+                    image: createCampusSvg("Morning Assembly", "Discipline, Values & Leadership", "#1e293b", "#059669")
+                }
+            ],
+            inquiries: []
+        };
+
+        let siteData = loadSiteData();
+
+        // Temporary upload buffers for modals
+        let tempNoticeFile = { name: "", data: "" };
+        let tempStaffPhoto = "";
+        let tempInfraPhoto = "";
+        let tempGalleryPhoto = "";
+
+        // ==================== INITIALIZATION & STORAGE ====================
+        function loadSiteData() {
+            try {
+                const raw = localStorage.getItem(STORAGE_KEY);
+                if (raw) {
+                    const parsed = JSON.parse(raw);
+                    return { ...defaultState, ...parsed, info: { ...defaultState.info, ...(parsed.info || {}) } };
+                }
+            } catch (e) {
+                console.error("Failed to load saved site data:", e);
+            }
+            return JSON.parse(JSON.stringify(defaultState));
+        }
+
+        function persistSiteData() {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(siteData));
+                updateStatsCounters();
+            } catch (e) {
+                showToast("Storage limit reached! Consider exporting a JSON backup.", "error");
+            }
+        }
+
+        window.onload = function () {
+            document.getElementById('currentYear').textContent = new Date().getFullYear();
+            renderAll();
+        };
+
+        function renderAll() {
+            applyInfoFields();
+            renderNotices();
+            renderStreams();
+            renderStaff();
+            renderInfrastructure();
+            renderGallery();
+            updateStatsCounters();
+            updateAdminUIState();
+        }
+
+        function applyInfoFields() {
+            const info = siteData.info;
+            document.querySelectorAll('[data-field]').forEach(el => {
+                const key = el.getAttribute('data-field');
+                if (info[key] !== undefined) {
+                    if (key === 'principalMessage') {
+                        el.innerHTML = info[key];
+                    } else {
+                        el.textContent = info[key];
+                    }
+                }
+            });
+
+            // Sync mirrored text & links
+            document.getElementById('heroUdise').textContent = info.udise;
+            document.getElementById('cardUdise').textContent = info.udise;
+            document.getElementById('contactUdise').textContent = info.udise;
+            document.getElementById('cardPrincipal').textContent = info.principalName;
+            document.getElementById('principalSigName').textContent = info.principalName;
+            document.getElementById('contactPrincipal').textContent = info.principalName;
+            document.getElementById('cardPhone').textContent = info.phone;
+            document.getElementById('principalPhone').textContent = info.phone;
+            document.getElementById('contactPhone').textContent = info.phone;
+            document.getElementById('contactEmail').textContent = info.email;
+
+            document.getElementById('topEmailLink').href = `mailto:${info.email}`;
+            document.getElementById('contactEmailLink').href = `mailto:${info.email}`;
+            document.getElementById('topPhoneLink').href = `tel:${info.phone}`;
+            document.getElementById('contactPhoneLink').href = `tel:${info.phone}`;
+
+            // Principal photo
+            const pImg = document.getElementById('principalPhotoImg');
+            const pPlaceholder = document.getElementById('principalPhotoPlaceholder');
+            if (info.principalPhoto) {
+                pImg.src = info.principalPhoto;
+                pImg.classList.remove('hidden');
+                pPlaceholder.classList.add('hidden');
+            } else {
+                pImg.classList.add('hidden');
+                pPlaceholder.classList.remove('hidden');
+            }
+
+            // Update ticker dynamically
+            const latestNoticeTitle = siteData.notices.length > 0 ? ` • Latest: ${siteData.notices[0].title}` : '';
+            document.getElementById('tickerText').textContent = `Welcome to ${info.schoolName} (UDISE: ${info.udise}) • Principal: ${info.principalName} • Contact: ${info.phone}${latestNoticeTitle}`;
+        }
+
+        function updateStatsCounters() {
+            document.getElementById('statStaffCount').textContent = siteData.staff.length;
+            document.getElementById('statFilesCount').textContent = siteData.notices.length;
+            document.getElementById('inquiryCountBadge').textContent = (siteData.inquiries || []).length;
+        }
+
+        // ==================== ADMIN MODE & INLINE EDITING ====================
+        function handleAdminButtonClick() {
+            if (isAdminMode) {
+                toggleAdminMode();
+            } else {
+                document.getElementById('pinErrorMsg').classList.add('hidden');
+                document.getElementById('adminPinInput').value = '';
+                openModal('pinModal');
+            }
+        }
+
+        function verifyAdminPin(e) {
+            e.preventDefault();
+            const pin = document.getElementById('adminPinInput').value.trim();
+            if (pin === '1234') {
+                closeModal('pinModal');
+                isAdminMode = true;
+                updateAdminUIState();
+                showToast("Admin Edit Mode enabled! You can now edit text, add staff, and upload files.");
+            } else {
+                document.getElementById('pinErrorMsg').classList.remove('hidden');
+            }
+        }
+
+        function toggleAdminMode() {
+            if (isAdminMode) {
+                saveAllInlineEdits(true);
+            }
+            isAdminMode = !isAdminMode;
+            updateAdminUIState();
+            if (!isAdminMode) {
+                showToast("Exited Admin Mode. Public visitor view active.");
+            }
+        }
+
+        function updateAdminUIState() {
+            const adminBar = document.getElementById('adminBar');
+            const adminBtnText = document.getElementById('adminBtnText');
+            const adminOnlyEls = document.querySelectorAll('.admin-only');
+            const editableEls = document.querySelectorAll('.editable-text');
+
+            if (isAdminMode) {
+                adminBar.classList.remove('hidden');
+                adminBtnText.textContent = "Exit Edit Mode";
+                adminOnlyEls.forEach(el => el.classList.remove('hidden'));
+                editableEls.forEach(el => {
+                    el.setAttribute('contenteditable', 'true');
+                    el.classList.add('editable-ring');
+                });
+            } else {
+                adminBar.classList.add('hidden');
+                adminBtnText.textContent = "Admin / Edit Mode";
+                adminOnlyEls.forEach(el => el.classList.add('hidden'));
+                editableEls.forEach(el => {
+                    el.removeAttribute('contenteditable');
+                    el.classList.remove('editable-ring');
+                });
+            }
+        }
+
+        function saveAllInlineEdits(silent = false) {
+            document.querySelectorAll('[data-field]').forEach(el => {
+                const key = el.getAttribute('data-field');
+                if (key === 'principalMessage') {
+                    siteData.info[key] = el.innerHTML.trim();
+                } else {
+                    siteData.info[key] = el.textContent.trim();
+                }
+            });
+            persistSiteData();
+            applyInfoFields();
+            if (!silent) {
+                showToast("All inline changes saved to browser storage!");
+            }
+        }
+
+        function uploadPrincipalPhoto(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                siteData.info.principalPhoto = e.target.result;
+                persistSiteData();
+                applyInfoFields();
+                showToast("Principal's photo updated!");
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // ==================== NOTICES & FILE DOWNLOADS ====================
+        function renderNotices() {
+            const filter = document.getElementById('noticeFilter').value;
+            const tbody = document.getElementById('noticesTableBody');
+            const emptyMsg = document.getElementById('emptyNoticesMsg');
+            tbody.innerHTML = '';
+
+            const filtered = siteData.notices.filter(n => filter === 'ALL' || n.category === filter);
+            if (filtered.length === 0) {
+                emptyMsg.classList.remove('hidden');
+                return;
+            }
+            emptyMsg.classList.add('hidden');
+
+            const badgeColors = {
+                Circular: 'bg-blue-100 text-blue-800',
+                Exam: 'bg-amber-100 text-amber-800',
+                Admission: 'bg-emerald-100 text-emerald-800',
+                General: 'bg-slate-200 text-slate-800'
+            };
+
+            filtered.forEach(item => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50 transition";
+                const badgeClass = badgeColors[item.category] || badgeColors.General;
+
+                tr.innerHTML = `
+                    <td class="py-4 px-5 whitespace-nowrap font-medium text-slate-600">${escapeHtml(item.date)}</td>
+                    <td class="py-4 px-5 whitespace-nowrap">
+                        <span class="px-2.5 py-1 rounded-full text-xs font-bold ${badgeClass}">${escapeHtml(item.category)}</span>
+                    </td>
+                    <td class="py-4 px-5">
+                        <p class="font-bold text-slate-900">${escapeHtml(item.title)}</p>
+                        ${item.description ? `<p class="text-xs text-slate-500 mt-0.5">${escapeHtml(item.description)}</p>` : ''}
+                    </td>
+                    <td class="py-4 px-5 text-xs text-slate-600">
+                        ${item.fileName ? `<span class="inline-flex items-center gap-1.5 bg-slate-100 px-2.5 py-1 rounded-lg border border-slate-200 font-medium"><i class="fas fa-file-lines text-navy-800"></i> ${escapeHtml(item.fileName)}</span>` : '<span class="text-slate-400">Notice Only</span>'}
+                    </td>
+                    <td class="py-4 px-5 text-right whitespace-nowrap space-x-1.5">
+                        ${item.fileData ? `
+                            <a href="${item.fileData}" download="${escapeHtml(item.fileName || 'GHSS_Marwah_Document')}" class="inline-flex items-center gap-1.5 bg-navy-900 hover:bg-navy-800 text-white text-xs font-bold px-3.5 py-2 rounded-lg shadow-sm transition">
+                                <i class="fas fa-download"></i> Download
+                            </a>
+                        ` : ''}
+                        <button onclick="openNoticeModal('${item.id}')" class="admin-only ${isAdminMode ? '' : 'hidden'} inline-flex items-center gap-1 bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold px-2.5 py-2 rounded-lg" title="Edit">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button onclick="deleteNotice('${item.id}')" class="admin-only ${isAdminMode ? '' : 'hidden'} inline-flex items-center gap-1 bg-red-600 hover:bg-red-700 text-white text-xs font-bold px-2.5 py-2 rounded-lg" title="Delete">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function openNoticeModal(id = null) {
+            tempNoticeFile = { name: "", data: "" };
+            document.getElementById('noticeFileInput').value = '';
+            document.getElementById('selectedFileNameDisplay').textContent = '';
+
+            if (id) {
+                const existing = siteData.notices.find(n => n.id === id);
+                if (!existing) return;
+                document.getElementById('noticeModalTitle').textContent = "Edit Notice / Document";
+                document.getElementById('editNoticeId').value = existing.id;
+                document.getElementById('noticeTitleInput').value = existing.title;
+                document.getElementById('noticeCategoryInput').value = existing.category;
+                document.getElementById('noticeDateInput').value = existing.date;
+                document.getElementById('noticeDescInput').value = existing.description || '';
+                if (existing.fileName) {
+                    document.getElementById('selectedFileNameDisplay').textContent = `Current file: ${existing.fileName}`;
+                    tempNoticeFile = { name: existing.fileName, data: existing.fileData };
+                }
+            } else {
+                document.getElementById('noticeModalTitle').textContent = "Upload Notice / Downloadable File";
+                document.getElementById('editNoticeId').value = '';
+                document.getElementById('noticeTitleInput').value = '';
+                document.getElementById('noticeCategoryInput').value = 'Circular';
+                document.getElementById('noticeDateInput').value = new Date().toISOString().split('T')[0];
+                document.getElementById('noticeDescInput').value = '';
+            }
+            openModal('noticeModal');
+        }
+
+        function handleNoticeFileSelect(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                tempNoticeFile = { name: file.name, data: e.target.result };
+                document.getElementById('selectedFileNameDisplay').textContent = `Ready to upload: ${file.name}`;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function saveNotice(e) {
+            e.preventDefault();
+            const id = document.getElementById('editNoticeId').value;
+            const title = document.getElementById('noticeTitleInput').value.trim();
+            const category = document.getElementById('noticeCategoryInput').value;
+            const date = document.getElementById('noticeDateInput').value;
+            const description = document.getElementById('noticeDescInput').value.trim();
+
+            if (id) {
+                const idx = siteData.notices.findIndex(n => n.id === id);
+                if (idx !== -1) {
+                    siteData.notices[idx] = {
+                        ...siteData.notices[idx],
+                        title, category, date, description,
+                        fileName: tempNoticeFile.name,
+                        fileData: tempNoticeFile.data
+                    };
+                }
+            } else {
+                siteData.notices.unshift({
+                    id: 'n_' + Date.now(),
+                    title, category, date, description,
+                    fileName: tempNoticeFile.name,
+                    fileData: tempNoticeFile.data
+                });
+            }
+
+            persistSiteData();
+            renderNotices();
+            applyInfoFields();
+            closeModal('noticeModal');
+            showToast("Notice & downloadable file published!");
+        }
+
+        function deleteNotice(id) {
+            siteData.notices = siteData.notices.filter(n => n.id !== id);
+            persistSiteData();
+            renderNotices();
+            showToast("Notice deleted.");
+        }
+
+        // ==================== ACADEMIC STREAMS ====================
+        function renderStreams() {
+            const grid = document.getElementById('streamsGrid');
+            grid.innerHTML = '';
+            siteData.streams.forEach(st => {
+                const subjectsArr = st.subjects.split(',').map(s => s.trim()).filter(Boolean);
+                const card = document.createElement('div');
+                card.className = "bg-slate-50 border border-slate-200 rounded-2xl p-6 shadow-sm hover:shadow-md transition flex flex-col justify-between";
+                card.innerHTML = `
+                    <div>
+                        <div class="flex items-start justify-between gap-2 mb-3">
+                            <span class="bg-navy-900 text-amber-400 text-xs font-bold px-3 py-1 rounded-full">${escapeHtml(st.classes)}</span>
+                            <div class="admin-only ${isAdminMode ? '' : 'hidden'} flex gap-1">
+                                <button onclick="openStreamModal('${st.id}')" class="bg-amber-500 text-white p-1.5 rounded-lg text-xs"><i class="fas fa-edit"></i></button>
+                                <button onclick="deleteStream('${st.id}')" class="bg-red-600 text-white p-1.5 rounded-lg text-xs"><i class="fas fa-trash"></i></button>
+                            </div>
+                        </div>
+                        <h3 class="font-serif text-lg font-bold text-navy-950 mb-3">${escapeHtml(st.title)}</h3>
+                        <p class="text-xs font-bold uppercase text-slate-400 mb-2">Subjects Offered:</p>
+                        <div class="flex flex-wrap gap-1.5">
+                            ${subjectsArr.map(sub => `<span class="bg-white border border-slate-200 text-slate-700 text-xs font-medium px-2.5 py-1 rounded-lg">${escapeHtml(sub)}</span>`).join('')}
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function openStreamModal(id = null) {
+            if (id) {
+                const st = siteData.streams.find(s => s.id === id);
+                if (!st) return;
+                document.getElementById('editStreamId').value = st.id;
+                document.getElementById('streamTitleInput').value = st.title;
+                document.getElementById('streamClassesInput').value = st.classes;
+                document.getElementById('streamSubjectsInput').value = st.subjects;
+            } else {
+                document.getElementById('editStreamId').value = '';
+                document.getElementById('streamTitleInput').value = '';
+                document.getElementById('streamClassesInput').value = '';
+                document.getElementById('streamSubjectsInput').value = '';
+            }
+            openModal('streamModal');
+        }
+
+        function saveStreamItem(e) {
+            e.preventDefault();
+            const id = document.getElementById('editStreamId').value;
+            const title = document.getElementById('streamTitleInput').value.trim();
+            const classes = document.getElementById('streamClassesInput').value.trim();
+            const subjects = document.getElementById('streamSubjectsInput').value.trim();
+
+            if (id) {
+                const idx = siteData.streams.findIndex(s => s.id === id);
+                if (idx !== -1) siteData.streams[idx] = { id, title, classes, subjects };
+            } else {
+                siteData.streams.push({ id: 'st_' + Date.now(), title, classes, subjects });
+            }
+            persistSiteData();
+            renderStreams();
+            closeModal('streamModal');
+            showToast("Academic stream saved!");
+        }
+
+        function deleteStream(id) {
+            siteData.streams = siteData.streams.filter(s => s.id !== id);
+            persistSiteData();
+            renderStreams();
+            showToast("Academic stream removed.");
+        }
+
+        // ==================== STAFF DIRECTORY ====================
+        function renderStaff() {
+            const query = document.getElementById('staffSearchInput').value.toLowerCase().trim();
+            const grid = document.getElementById('staffGrid');
+            grid.innerHTML = '';
+
+            const filtered = siteData.staff.filter(s =>
+                s.name.toLowerCase().includes(query) ||
+                s.designation.toLowerCase().includes(query) ||
+                s.subject.toLowerCase().includes(query)
+            );
+
+            filtered.forEach(member => {
+                const card = document.createElement('div');
+                card.className = "bg-white border border-slate-200 rounded-2xl p-5 shadow-sm hover:shadow-md transition flex flex-col justify-between relative";
+                card.innerHTML = `
+                    <div>
+                        <div class="admin-only ${isAdminMode ? '' : 'hidden'} absolute top-3 right-3 flex gap-1.5">
+                            <button onclick="openStaffModal('${member.id}')" class="bg-amber-500 hover:bg-amber-600 text-white p-1.5 rounded-lg text-xs shadow" title="Edit Staff">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button onclick="deleteStaff('${member.id}')" class="bg-red-600 hover:bg-red-700 text-white p-1.5 rounded-lg text-xs shadow" title="Delete Staff">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+
+                        <div class="flex items-center gap-3.5 mb-4">
+                            ${member.photo
+                                ? `<img src="${member.photo}" alt="${escapeHtml(member.name)}" class="w-16 h-16 rounded-xl object-cover border-2 border-navy-900 shrink-0">`
+                                : `<div class="w-16 h-16 rounded-xl bg-navy-900 text-amber-400 flex items-center justify-center text-2xl font-bold shrink-0"><i class="fas fa-user-graduate"></i></div>`
+                            }
+                            <div>
+                                <span class="inline-block bg-emerald-50 text-emerald-700 border border-emerald-200 text-[11px] font-bold px-2 py-0.5 rounded-md mb-1">
+                                    ${escapeHtml(member.designation)}
+                                </span>
+                                <h3 class="font-bold text-slate-900 text-base leading-snug">${escapeHtml(member.name)}</h3>
+                            </div>
+                        </div>
+
+                        <div class="space-y-1.5 text-xs text-slate-600 border-t border-slate-100 pt-3">
+                            <p><strong class="text-slate-800">Department:</strong> ${escapeHtml(member.subject)}</p>
+                            <p><strong class="text-slate-800">Qualification:</strong> ${escapeHtml(member.qualification)}</p>
+                            ${member.contact ? `<p><strong class="text-slate-800">Contact:</strong> ${escapeHtml(member.contact)}</p>` : ''}
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function openStaffModal(id = null) {
+            tempStaffPhoto = "";
+            document.getElementById('staffPhotoInput').value = '';
+
+            if (id) {
+                const member = siteData.staff.find(s => s.id === id);
+                if (!member) return;
+                document.getElementById('staffModalTitle').textContent = "Edit Staff Member";
+                document.getElementById('editStaffId').value = member.id;
+                document.getElementById('staffNameInput').value = member.name;
+                document.getElementById('staffDesignationInput').value = member.designation;
+                document.getElementById('staffSubjectInput').value = member.subject;
+                document.getElementById('staffQualInput').value = member.qualification;
+                document.getElementById('staffContactInput').value = member.contact || '';
+                tempStaffPhoto = member.photo || '';
+            } else {
+                document.getElementById('staffModalTitle').textContent = "Add New Staff Member";
+                document.getElementById('editStaffId').value = '';
+                document.getElementById('staffNameInput').value = '';
+                document.getElementById('staffDesignationInput').value = '';
+                document.getElementById('staffSubjectInput').value = '';
+                document.getElementById('staffQualInput').value = '';
+                document.getElementById('staffContactInput').value = '';
+            }
+            openModal('staffModal');
+        }
+
+        function handleStaffPhotoSelect(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                tempStaffPhoto = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function saveStaffMember(e) {
+            e.preventDefault();
+            const id = document.getElementById('editStaffId').value;
+            const staffObj = {
+                id: id || 's_' + Date.now(),
+                name: document.getElementById('staffNameInput').value.trim(),
+                designation: document.getElementById('staffDesignationInput').value.trim(),
+                subject: document.getElementById('staffSubjectInput').value.trim(),
+                qualification: document.getElementById('staffQualInput').value.trim(),
+                contact: document.getElementById('staffContactInput').value.trim(),
+                photo: tempStaffPhoto
+            };
+
+            if (id) {
+                const idx = siteData.staff.findIndex(s => s.id === id);
+                if (idx !== -1) siteData.staff[idx] = staffObj;
+            } else {
+                siteData.staff.push(staffObj);
+            }
+
+            persistSiteData();
+            renderStaff();
+            closeModal('staffModal');
+            showToast("Staff directory updated!");
+        }
+
+        function deleteStaff(id) {
+            siteData.staff = siteData.staff.filter(s => s.id !== id);
+            persistSiteData();
+            renderStaff();
+            showToast("Staff member removed.");
+        }
+
+        // ==================== INFRASTRUCTURE ====================
+        function renderInfrastructure() {
+            const grid = document.getElementById('infraGrid');
+            grid.innerHTML = '';
+
+            siteData.infrastructure.forEach(item => {
+                const card = document.createElement('div');
+                card.className = "bg-slate-50 border border-slate-200 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition flex flex-col justify-between relative";
+                card.innerHTML = `
+                    <div>
+                        <div class="admin-only ${isAdminMode ? '' : 'hidden'} absolute top-3 right-3 z-10 flex gap-1.5">
+                            <button onclick="openInfraModal('${item.id}')" class="bg-amber-500 hover:bg-amber-600 text-white p-1.5 rounded-lg text-xs shadow">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button onclick="deleteInfra('${item.id}')" class="bg-red-600 hover:bg-red-700 text-white p-1.5 rounded-lg text-xs shadow">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+
+                        ${item.photo
+                            ? `<img src="${item.photo}" alt="${escapeHtml(item.title)}" class="w-full h-44 object-cover border-b border-slate-200">`
+                            : `<div class="h-28 bg-gradient-to-r from-navy-900 to-navy-800 px-6 flex items-center justify-between text-white">
+                                 <i class="fas fa-building-columns text-3xl text-amber-400"></i>
+                                 <span class="bg-white/15 px-3 py-1 rounded-full text-xs font-bold">${escapeHtml(item.count)}</span>
+                               </div>`
+                        }
+
+                        <div class="p-6">
+                            <div class="flex items-center justify-between gap-2 mb-2">
+                                <span class="text-xs font-bold text-emerald-700 bg-emerald-100 px-2.5 py-0.5 rounded-full">
+                                    ${escapeHtml(item.status)}
+                                </span>
+                                ${item.photo ? `<span class="text-xs font-bold text-navy-900 bg-slate-200 px-2.5 py-0.5 rounded-full">${escapeHtml(item.count)}</span>` : ''}
+                            </div>
+                            <h3 class="font-serif text-lg font-bold text-navy-950 mb-2">${escapeHtml(item.title)}</h3>
+                            <p class="text-sm text-slate-600 leading-relaxed">${escapeHtml(item.description)}</p>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function openInfraModal(id = null) {
+            tempInfraPhoto = "";
+            document.getElementById('infraPhotoInput').value = '';
+
+            if (id) {
+                const item = siteData.infrastructure.find(i => i.id === id);
+                if (!item) return;
+                document.getElementById('infraModalTitle').textContent = "Edit Infrastructure Facility";
+                document.getElementById('editInfraId').value = item.id;
+                document.getElementById('infraTitleInput').value = item.title;
+                document.getElementById('infraCountInput').value = item.count;
+                document.getElementById('infraStatusInput').value = item.status;
+                document.getElementById('infraDescInput').value = item.description;
+                tempInfraPhoto = item.photo || '';
+            } else {
+                document.getElementById('infraModalTitle').textContent = "Add Infrastructure Facility";
+                document.getElementById('editInfraId').value = '';
+                document.getElementById('infraTitleInput').value = '';
+                document.getElementById('infraCountInput').value = '';
+                document.getElementById('infraStatusInput').value = 'Fully Functional';
+                document.getElementById('infraDescInput').value = '';
+            }
+            openModal('infraModal');
+        }
+
+        function handleInfraPhotoSelect(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                tempInfraPhoto = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function saveInfraItem(e) {
+            e.preventDefault();
+            const id = document.getElementById('editInfraId').value;
+            const infraObj = {
+                id: id || 'inf_' + Date.now(),
+                title: document.getElementById('infraTitleInput').value.trim(),
+                count: document.getElementById('infraCountInput').value.trim(),
+                status: document.getElementById('infraStatusInput').value,
+                description: document.getElementById('infraDescInput').value.trim(),
+                photo: tempInfraPhoto
+            };
+
+            if (id) {
+                const idx = siteData.infrastructure.findIndex(i => i.id === id);
+                if (idx !== -1) siteData.infrastructure[idx] = infraObj;
+            } else {
+                siteData.infrastructure.push(infraObj);
+            }
+
+            persistSiteData();
+            renderInfrastructure();
+            closeModal('infraModal');
+            showToast("Infrastructure details updated!");
+        }
+
+        function deleteInfra(id) {
+            siteData.infrastructure = siteData.infrastructure.filter(i => i.id !== id);
+            persistSiteData();
+            renderInfrastructure();
+            showToast("Infrastructure item deleted.");
+        }
+
+        // ==================== GALLERY ====================
+        function renderGallery() {
+            const grid = document.getElementById('galleryGrid');
+            grid.innerHTML = '';
+
+            siteData.gallery.forEach(photo => {
+                const card = document.createElement('div');
+                card.className = "group bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition relative";
+                card.innerHTML = `
+                    <button onclick="deleteGalleryPhoto('${photo.id}')" class="admin-only ${isAdminMode ? '' : 'hidden'} absolute top-2.5 right-2.5 z-10 bg-red-600 hover:bg-red-700 text-white p-2 rounded-lg text-xs shadow">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                    <div class="aspect-[16/11] overflow-hidden bg-slate-200 cursor-pointer" onclick="openLightbox('${photo.id}')">
+                        <img src="${photo.image}" alt="${escapeHtml(photo.caption)}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                    </div>
+                    <div class="p-3.5 flex items-center justify-between gap-2">
+                        <p class="text-xs font-semibold text-slate-800 line-clamp-2">${escapeHtml(photo.caption)}</p>
+                        <a href="${photo.image}" download="GHSS_Marwah_${photo.id}.png" class="text-navy-800 hover:text-emerald-700 p-1.5 rounded-lg hover:bg-slate-100 shrink-0" title="Download Image">
+                            <i class="fas fa-download text-sm"></i>
+                        </a>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function openGalleryModal() {
+            tempGalleryPhoto = "";
+            document.getElementById('galleryCaptionInput').value = '';
+            document.getElementById('galleryFileInput').value = '';
+            openModal('galleryModal');
+        }
+
+        function handleGalleryFileSelect(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                tempGalleryPhoto = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function saveGalleryPhoto(e) {
+            e.preventDefault();
+            if (!tempGalleryPhoto) return;
+            const caption = document.getElementById('galleryCaptionInput').value.trim();
+            siteData.gallery.unshift({
+                id: 'g_' + Date.now(),
+                caption,
+                image: tempGalleryPhoto
+            });
+            persistSiteData();
+            renderGallery();
+            closeModal('galleryModal');
+            showToast("Photo added to gallery!");
+        }
+
+        function deleteGalleryPhoto(id) {
+            siteData.gallery = siteData.gallery.filter(g => g.id !== id);
+            persistSiteData();
+            renderGallery();
+            showToast("Photo removed from gallery.");
+        }
+
+        function openLightbox(id) {
+            const photo = siteData.gallery.find(g => g.id === id);
+            if (!photo) return;
+            document.getElementById('lightboxImg').src = photo.image;
+            document.getElementById('lightboxCaption').textContent = photo.caption;
+            document.getElementById('lightboxDownloadBtn').href = photo.image;
+            openModal('lightboxModal');
+        }
+
+        // ==================== VISITOR INQUIRIES ====================
+        function submitVisitorInquiry(e) {
+            e.preventDefault();
+            const inquiry = {
+                id: 'inq_' + Date.now(),
+                date: new Date().toLocaleString(),
+                name: document.getElementById('inqName').value.trim(),
+                contact: document.getElementById('inqContact').value.trim(),
+                subject: document.getElementById('inqSubject').value.trim(),
+                message: document.getElementById('inqMessage').value.trim()
+            };
+            if (!siteData.inquiries) siteData.inquiries = [];
+            siteData.inquiries.unshift(inquiry);
+            persistSiteData();
+            e.target.reset();
+            showToast("Your message has been sent to GHSS Marwah Office!");
+        }
+
+        function openInquiriesDrawer() {
+            const list = document.getElementById('inquiriesList');
+            const items = siteData.inquiries || [];
+            if (items.length === 0) {
+                list.innerHTML = '<p class="text-slate-500 text-center py-8">No visitor inquiries received yet.</p>';
+            } else {
+                list.innerHTML = items.map(inq => `
+                    <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-1">
+                        <div class="flex justify-between text-xs text-slate-500">
+                            <strong class="text-navy-900">${escapeHtml(inq.name)} (${escapeHtml(inq.contact)})</strong>
+                            <span>${escapeHtml(inq.date)}</span>
+                        </div>
+                        <p class="font-bold text-slate-800">${escapeHtml(inq.subject)}</p>
+                        <p class="text-slate-600">${escapeHtml(inq.message)}</p>
+                    </div>
+                `).join('');
+            }
+            openModal('inquiriesModal');
+        }
+
+        // ==================== BACKUP EXPORT / IMPORT / RESET ====================
+        function exportBackup() {
+            saveAllInlineEdits(true);
+            const dataStr = JSON.stringify(siteData, null, 2);
+            const blob = new Blob([dataStr], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `GHSS_Marwah_Website_Backup_${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast("Website backup JSON downloaded!");
+        }
+
+        function importBackup(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                try {
+                    const imported = JSON.parse(e.target.result);
+                    if (imported && imported.info) {
+                        siteData = imported;
+                        persistSiteData();
+                        renderAll();
+                        showToast("Website backup restored successfully!");
+                    } else {
+                        showToast("Invalid backup file format.", "error");
+                    }
+                } catch (err) {
+                    showToast("Error reading backup file.", "error");
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function resetToDefaultConfirm() {
+            siteData = JSON.parse(JSON.stringify(defaultState));
+            persistSiteData();
+            renderAll();
+            showToast("Website reset to original default content.");
+        }
+
+        // ==================== UTILITIES ====================
+        function openModal(id) {
+            document.getElementById(id).classList.remove('hidden');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.add('hidden');
+        }
+
+        function toggleMobileMenu() {
+            document.getElementById('mobileMenu').classList.toggle('hidden');
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        let toastTimer;
+        function showToast(msg, type = "success") {
+            const toast = document.getElementById('toast');
+            const icon = document.getElementById('toastIcon');
+            document.getElementById('toastMessage').textContent = msg;
+            icon.className = type === "error"
+                ? "fas fa-exclamation-circle text-red-400"
+                : "fas fa-check-circle text-emerald-400";
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3400);
+        }
+    </script>
+</body>
+</html>
